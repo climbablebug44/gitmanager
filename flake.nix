@@ -18,8 +18,10 @@
     {
 
       packages = nixpkgs.lib.genAttrs archs (system: with nixpkgs.legacyPackages.${system}; rec {
-        gitmanager = nixpkgs.stdenv.mkDerivation {
+        gitmanager = stdenv.mkDerivation {
           src = ./src;
+          pname = "climbablebug_gitmanager";
+          version = "0.1.0";
           unpack = false;
           installPhase = ''
             # $out is an automatically generated filepath by nix,
@@ -50,8 +52,8 @@
             timers.gitmanager = {
               wantedBy = [ "timers.target" ];
               timerConfig = {
-                OnBootSec = cfg.freq;
-                OnUnitActiveSec = cfg.freq;
+                OnBootSec = config.services.gitmanager.freq;
+                OnUnitActiveSec = config.services.gitmanager.freq;
                 Unit = "gitmanager.service";
               };
             };
