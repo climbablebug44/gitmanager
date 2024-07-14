@@ -6,6 +6,7 @@
   };
 
   outputs = { self, nixpkgs }:
+    with nixpkgs.lib;
     let
       archs = [
         "x86_64-linux"
@@ -30,7 +31,7 @@
         };
       });
 
-      nixosModules.gitmanager = with nixpkgs.lib; {
+      nixosModules.gitmanager = { config, pkgs, lib, ... }: with nixpkgs.lib; {
         options.services.gitmanager = {
           enable = mkEnableOption "Gitmanager Service";
           freq = mkOption {
