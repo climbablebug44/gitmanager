@@ -12,7 +12,7 @@
         "aarch64-linux"
         "riscv64-linux"
       ];
-      genStr = key: value: "${key}:${value}";
+      genStr = repoPath: origin: "${repoPath}:${origin}";
     in
     {
 
@@ -63,7 +63,7 @@
                   Type = "oneshot";
                   User = "root";
                 };
-                script = "gitmanager '${lib.concatMapStrings (x: x+"\n") map genStr config.repos }'";
+                script = "gitmanager '${lib.concatMapStrings (x: x+"\n") map (x: genStr x.repoPath x.origin) config.repos }'";
               };
             };
           };
