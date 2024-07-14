@@ -63,7 +63,7 @@
                   Type = "oneshot";
                   User = "root";
                 };
-                script = "gitmanager ${lib.concatStrings map genStr config.repos }";
+                script = "gitmanager '${lib.concatMapStrings (x: x+"\n") map genStr config.repos }'";
               };
             };
           };
