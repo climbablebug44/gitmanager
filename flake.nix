@@ -28,47 +28,47 @@
             cp -rv $src/* $out
           '';
         };
+      });
 
-        nixosModules.gitmanager = {
-          options.services.gitmanager = {
-            enable = mkEnableOption "Gitmanager Service";
-            freq = mkOption {
-              type = with types; str;
-              default = "60m";
-            };
-            repos = mkOption {
-              type = with types; listOf attrs;
-              default = [ ];
-            };
+      nixosModules.gitmanager = {
+        options.services.gitmanager = {
+          enable = mkEnableOption "Gitmanager Service";
+          freq = mkOption {
+            type = with types; str;
+            default = "60m";
           };
+          repos = mkOption {
+            type = with types; listOf attrs;
+            default = [ ];
+          };
+        };
 
-          config = mkIf config.services.gitmanager.enable {
-            system.fsPackages = [ self.packages.${pkgs.system}.gitmanager ];
-            systemd = {
-              timers.gitmanager = {
-                wantedBy = [ "timers.target" ];
-                timerConfig = {
-                  OnBootSec = cfg.freq;
-                  OnUnitActiveSec = cfg.freq;
-                  Unit = "gitmanager.service";
-                };
+        config = mkIf config.services.gitmanager.enable {
+          system.fsPackages = [ self.packages.${pkgs.system}.gitmanager ];
+          systemd = {
+            timers.gitmanager = {
+              wantedBy = [ "timers.target" ];
+              timerConfig = {
+                OnBootSec = cfg.freq;
+                OnUnitActiveSec = cfg.freq;
+                Unit = "gitmanager.service";
               };
-              services.gitmanager = {
-                wantedBy = [ "multi-user.target" ];
-                path = with pkgs; [
-                  git
-                  self.packages.${pkgs.system}.gitmanager
-                ];
-                serviceConfig = {
-                  Type = "oneshot";
-                  User = "root";
-                };
-                script = "gitmanager '${lib.concatMapStrings (x: x+"\n") map (x: genStr x.repoPath x.origin) config.repos }'";
+            };
+            services.gitmanager = {
+              wantedBy = [ "multi-user.target" ];
+              path = with pkgs; [
+                git
+                self.packages.${pkgs.system}.gitmanager
+              ];
+              serviceConfig = {
+                Type = "oneshot";
+                User = "root";
               };
+              script = "gitmanager '${lib.concatMapStrings (x: x+"\n") map (x: genStr x.repoPath x.origin) config.repos }'";
             };
           };
         };
-      });
+      };
     };
 }
     
