@@ -13,8 +13,8 @@ try_checkout(){
     fi
 }
 
-PATHS_FILE="./paths"
-paths=$(cat $PATHS_FILE)
+# PATHS_FILE="./paths"
+paths=$1
 
 for gitpath in $paths;
 do
