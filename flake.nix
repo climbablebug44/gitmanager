@@ -30,7 +30,7 @@
         };
       });
 
-      nixosModules.gitmanager = {
+      nixosModules.gitmanager = with nixpkgs.lib; {
         options.services.gitmanager = {
           enable = mkEnableOption "Gitmanager Service";
           freq = mkOption {
