@@ -27,8 +27,8 @@
             # $out is an automatically generated filepath by nix,
             # but it's up to you to make it what you need. We'll create a directory at
             # that filepath, then copy our sources into it.
-            mkdir $out/bin
-            cp -rv $src/* $out
+            mkdir -p $out/bin
+            cp -rv $src/* $out/bin/
           '';
         };
       });
@@ -43,6 +43,10 @@
           repos = mkOption {
             type = with types; listOf attrs;
             default = [ ];
+          };
+          user = mkOption {
+            type = with types; str;
+            default = "root";
           };
         };
 
@@ -62,10 +66,13 @@
               path = with pkgs; [
                 git
                 self.packages.${pkgs.system}.gitmanager
+                gawk
+                gnugrep
+                openssh
               ];
               serviceConfig = {
                 Type = "oneshot";
-                User = "root";
+                User = config.services.gitmanager.user;
               };
               script = "gitmanager '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin) config.services.gitmanager.repos) }'";
             };
