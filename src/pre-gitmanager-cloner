@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+paths=$1
+
+for gitpath in $paths;
+do
+    path=$(printf "$gitpath" | awk -F ':' '{ print $1 }')
+    REMOTE=$(printf "$gitpath" | awk -F ':' '{ print $2 }')
+    REMOTE_REPO=$(printf "$gitpath" | awk -F ':' '{ print $3 $4 }')
+
+    echo "checking repo at '$path'"
+    mkdir -p $path
+    cd $path
+    CURRREPO=$(git remote -v | grep "$REMOTE" | grep "fetch" | awk '{ print $2 }')
+    if [[ "$CURRREPO" == "$REMOTE_REPO" ]]
+    then
+        echo 'repo exists'
+    else
+        echo 'repo does not exist at path, cloning...'
+        git clone $REMOTE .
+        echo 'cloned...'
+    fi
+done

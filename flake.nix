@@ -13,7 +13,7 @@
         "aarch64-linux"
         "riscv64-linux"
       ];
-      genStr = repoPath: origin: "${repoPath}:${origin}";
+      genStr = repoPath: origin: remote: "${repoPath}:${origin}:${remote}";
     in
     {
 
@@ -74,6 +74,7 @@
                 Type = "oneshot";
                 User = config.services.gitmanager.user;
               };
+              preStart="pre-gitmanager-start '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin x.remoteURL) config.services.gitmanager.repos) }'";
               script = "gitmanager '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin) config.services.gitmanager.repos) }'";
             };
           };
