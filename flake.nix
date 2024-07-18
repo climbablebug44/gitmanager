@@ -74,8 +74,8 @@
                 Type = "oneshot";
                 User = config.services.gitmanager.user;
               };
-              preStart="pre-gitmanager-start '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin x.remoteURL) config.services.gitmanager.repos) }'";
-              script = "gitmanager '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin) config.services.gitmanager.repos) }'";
+              preStart="pre-gitmanager-cloner '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin x.remoteURL) config.services.gitmanager.repos) }'";
+              script = "gitmanager '${lib.concatMapStrings (x: x+"\n") (map (x: genStr x.repoPath x.origin x.remoteURL) config.services.gitmanager.repos) }'";
             };
           };
         };
